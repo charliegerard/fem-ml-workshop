@@ -1,0 +1,12 @@
+node_modules/
+.DS_Store
+.next/
+.vercel
+package-lock.json
+yarn.lock
+.git
+exercises/*/node_modules
+exercises/*/dist
+exercises/*/.parcel-cache
+exercises/*/.package-lock.json
+
