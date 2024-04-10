@@ -45,179 +45,127 @@ You should see a demo app that looks like this:
 
 ## Import the pre-trained model
 
-Import TensorFlow.js, the list of classes and the model:
+Import TensorFlow.js and the model:
 
 ```js
 import * as tf from "@tensorflow/tfjs";
-
-import { IMAGENET_CLASSES } from "./classes";
-
-const MOBILENET_MODEL_PATH =
-  "https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/classification/3/default/1";
+import * as cocoSsd from "@tensorflow-models/coco-ssd";
 ```
 
 ## Load the model
 
+To be able to use the model, it needs to be loaded:
+
 ```js
-let model;
-const loadModel = async () => {
-  model = await tf.loadGraphModel(MOBILENET_MODEL, {
-    fromTFHub: true,
-  });
-  // Warmup the model. Not necessary, but makes the first prediction
-  // faster. Call `dispose` to release the WebGL memory allocated for the return
-  // value of `predict`.
-  model.predict(tf.zeros([1, IMAGE_SIZE, IMAGE_SIZE, 3])).dispose();
+let model = await cocoSsd.load();
+```
+
+## Predict the image's label
+
+First, let's import the `handleFilePicker` function from the `utils.js` file to be able to select a local file from the browser:
+
+```js
+import { handleFilePicker } from "./utils";
+```
+
+This function opens a file picker to let you select a file you want to run the predictions on. It takes a callback as parameter to predict when the image is loaded.
+
+```js
+handleFilePicker(predict);
+```
+
+Now, this `predict` function used as callback will call the `.detect` method on the model.
+
+```js
+const predict = async (imgElement) => {
+  const predictions = await model.detect(imgElement);
 };
 ```
 
-## Run the prediction
-
-First, get the image data
+Now, you can either simply log the predictions in the browser's console or import the `showResult` function from the utils file as well.
 
 ```js
-const catElement = document.getElementById("cat");
+showResult(predictions);
 ```
 
-Then, feed it to the model
-
-```js
-async function predict(imgElement) {
-  const logits = tf.tidy(() => {
-    // tf.browser.fromPixels() returns a Tensor from an image element.
-    const img = tf.cast(tf.browser.fromPixels(imgElement), "float32");
-
-    const offset = tf.scalar(127.5);
-    // Normalize the image from [0, 255] to [-1, 1].
-    const normalized = img.sub(offset).div(offset);
-
-    // Reshape to a single-element batch so we can pass it to predict.
-    const batched = normalized.reshape([1, IMAGE_SIZE, IMAGE_SIZE, 3]);
-    return model.predict(batched);
-  });
-
-  // Convert logits to probabilities and class names.
-  const classes = await getTopKClasses(logits, TOPK_PREDICTIONS);
-
-  showResults(classes);
-}
-```
-
-Finally, get the prediction output
-
-```js
-export async function getTopKClasses(logits, topK) {
-  const values = await logits.data();
-
-  const valuesAndIndices = [];
-  for (let i = 0; i < values.length; i++) {
-    valuesAndIndices.push({ value: values[i], index: i });
-  }
-  valuesAndIndices.sort((a, b) => {
-    return b.value - a.value;
-  });
-  const topkValues = new Float32Array(topK);
-  const topkIndices = new Int32Array(topK);
-  for (let i = 0; i < topK; i++) {
-    topkValues[i] = valuesAndIndices[i].value;
-    topkIndices[i] = valuesAndIndices[i].index;
-  }
-
-  const topClassesAndProbs = [];
-  for (let i = 0; i < topkIndices.length; i++) {
-    topClassesAndProbs.push({
-      className: IMAGENET_CLASSES[topkIndices[i]],
-      probability: topkValues[i],
-    });
-  }
-  return topClassesAndProbs;
-}
-
-function showResults(classes) {
-  const predictionContainer = document.createElement("div");
-  predictionContainer.className = "pred-container";
-
-  const probsContainer = document.createElement("div");
-  for (let i = 0; i < classes.length; i++) {
-    const row = document.createElement("div");
-    row.className = "row";
-
-    const classElement = document.createElement("div");
-    classElement.className = "cell";
-    classElement.innerText = classes[i].className;
-    row.appendChild(classElement);
-
-    const probsElement = document.createElement("div");
-    probsElement.className = "cell";
-    probsElement.innerText = classes[i].probability.toFixed(3);
-    row.appendChild(probsElement);
-
-    probsContainer.appendChild(row);
-  }
-  predictionContainer.appendChild(probsContainer);
-
-  predictionsElement.insertBefore(
-    predictionContainer,
-    predictionsElement.firstChild
-  );
-}
-```
+You should now be able to select a local image from your computer and see the label predicted from the machine learning model displayed on the page.
 
 ## Enjoy! 🎉
 
 Try different images and experiment!
 
-## Live webcam feed
+## Part 2: Live webcam feed
 
-Let's go a step further and replace the image data with a live feed from the webcam:
-
-```js
-const video = document.querySelector("video");
-
-navigator.mediaDevices
-  .getUserMedia({
-    audio: false,
-    video: { width: 320, height: 185 },
-  })
-  .then((stream) => {
-    video.srcObject = stream;
-    track = stream.getTracks()[0];
-    video.onloadedmetadata = () => {
-      video.play();
-    };
-  })
-  .catch((err) => {
-    /* handle the error */
-  });
-```
-
-As the model still works with images and not videos, we need to write a function to take a picture from the webcam feed and feed that to the model to get predictions:
+Let's go a step further and replace the image data with a live feed from the webcam. To make it easier, you can import the `startWebcam` function from the utils file. This function uses the `getUserMedia` web API to start the webcam.
 
 ```js
-function takepicture() {
-  const context = canvas.getContext("2d");
-  if (width && height) {
-    canvas.width = width;
-    canvas.height = height;
-    context.drawImage(video, 0, 0, width, height);
+import { showResult, startWebcam } from "./utils";
 
-    const data = canvas.toDataURL("image/png");
-    const photo = document.createElement("img");
-    photo.setAttribute("src", data);
-    photo.width = IMAGE_SIZE;
-    photo.height = IMAGE_SIZE;
-    const outputEl = document.getElementsByClassName("output")[0];
-    outputEl.appendChild(photo);
-
-    predictButton.disabled = false;
-    predictButton.onclick = () => predict(photo);
-  }
-}
+const webcamButton = document.getElementById("webcam");
+webcamButton.onclick = () => startWebcam(video);
 ```
 
-Try the flow again and you should now be able to get predictions from custom images taken from your webcam!
+Because the `detect` method used in the previous section takes an image as parameter, we need to transform the webcam feed into a single image. To do this, you can import the `takePicture` function from the utils as well.
+This function uses the Canvas API and more specifically the `toDataURL` method to take the input from the webcam and append it to an image element.
+This function takes a video element and a callback as parameter, that will be called when the user clicks on the `predict` button.
 
-## Try different models
+```js
+import { showResult, startWebcam, takePicture } from "./utils";
+
+const pauseButton = document.getElementById("pause");
+pauseButton.onclick = () => takePicture(video, predict);
+```
+
+The `predict` function is the same as the one used previously.
+
+```js
+const predict = async (img) => {
+  const predictions = await model.detect(img);
+  console.log(predictions);
+  showResult(predictions);
+};
+```
+
+## Part 3: Try a different model
+
+One of the great things about TensorFlow.js is that you can change model and make minimal changes to your code to make it work. Let's try a face detection model!
+
+### Import the required packages
+
+For this model, you need to import a few more pakages
+
+```js
+import "@mediapipe/face_detection";
+import "@tensorflow/tfjs-core";
+import "@tensorflow/tfjs-backend-webgl";
+import * as faceDetection from "@tensorflow-models/face-detection";
+```
+
+### Load the model
+
+```js
+let model = faceDetection.SupportedModels.MediaPipeFaceDetector;
+const detectorConfig = {
+  runtime: "tfjs",
+};
+let detector = await faceDetection.createDetector(model, detectorConfig);
+```
+
+### Run the predictions
+
+One the model is loaded, you only need to change a couple of lines in the `predict` function.
+
+```js
+const predict = async (photo) => {
+  const estimationConfig = { flipHorizontal: false };
+  const faces = await detector.estimateFaces(photo, estimationConfig);
+  console.log("FACES: ", faces);
+};
+```
+
+Then, as an option (and a cool thing to do), you can use the data returned from the model to draw a box surrounding the faces found in the image. To make it easier, you can import the `drawFaceBox` function from the utils file and pass it the photo/video element as well as the faces data returned from the model.
+
+## Other models
 
 - Object detection: [CocoSSD](https://www.kaggle.com/models/tensorflow/ssd-mobilenet-v2/frameworks/tfJs)
 - [Face detection](https://github.com/tensorflow/tfjs-models/tree/master/face-detection)

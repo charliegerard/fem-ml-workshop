@@ -1,4 +1,4 @@
-# Machine Learning in JavaScript workshop for FrontEnd Masters
+# Machine Learning in JavaScript workshop for FrontEnd Masters - SOLUTIONS
 
 ## Run the workshop website
 
