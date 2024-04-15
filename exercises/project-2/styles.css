@@ -1,0 +1,13 @@
+body {
+  font-family: monospace;
+  color: white;
+  background-color: rgb(3, 3, 18);
+}
+
+#webcam {
+  border: 1px solid white;
+}
+
+button:hover {
+  cursor: pointer;
+}

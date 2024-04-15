@@ -3,8 +3,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Transfer learning with TensorFlow.js</title>
     <link rel="stylesheet" href="styles.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <!-- Part 1 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script> -->
   </head>
   <body>
     <h2>Transfer learning</h2>
@@ -17,24 +18,23 @@
     <!-- Part 2 -->
     <div id="status">Loading model...</div>
 
-    <div class="controller-panels" id="controller" style="display: none">
+    <div id="controller" style="display: none">
       <div>
-        <div>
+        <section>
           <button id="train">
             <span id="train-status">TRAIN MODEL</span>
           </button>
           <button id="predict">START PREDICTIONS</button>
-        </div>
-        <div>
-          <video
-            autoplay
-            playsinline
-            muted
-            id="webcam"
-            width="224"
-            height="224"
-          ></video>
-        </div>
+        </section>
+
+        <video
+          autoplay
+          playsinline
+          muted
+          id="webcam"
+          width="224"
+          height="224"
+        ></video>
       </div>
 
       <div id="buttons-container">
@@ -45,6 +45,6 @@
       </div>
     </div>
 
-    <script type="module" src="part2.js"></script>
+    <script type="module" src="part2-copy.js"></script>
   </body>
 </html>

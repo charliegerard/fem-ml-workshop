@@ -4,8 +4,10 @@ const path = require("path");
 
 const TRAIN_IMAGES_DIR = "./data/train";
 const TEST_IMAGES_DIR = "./data/test";
+const trainData = [];
+const testData = [];
 
-function loadImages(dataDir) {
+const loadImages = (dataDir) => {
   const images = [];
   const labels = [];
 
@@ -38,34 +40,27 @@ function loadImages(dataDir) {
   }
   console.log("Labels are: ", labels);
   return [images, labels];
-}
+};
 
-class ImageDataset {
-  constructor() {
-    this.trainData = [];
-    this.testData = [];
-  }
+const loadData = () => {
+  console.log("Loading images...");
+  trainData = loadImages(TRAIN_IMAGES_DIR);
+  testData = loadImages(TEST_IMAGES_DIR);
+  console.log("Images loaded successfully.");
+};
 
-  loadData() {
-    console.log("Loading images...");
-    this.trainData = loadImages(TRAIN_IMAGES_DIR);
-    this.testData = loadImages(TEST_IMAGES_DIR);
-    console.log("Images loaded successfully.");
-  }
+const getTrainData = () => {
+  return {
+    images: tf.concat(trainData[0]),
+    labels: tf.oneHot(tf.tensor1d(trainData[1], "int32"), 2).toFloat(), // 2 is the number of classes
+  };
+};
 
-  getTrainData() {
-    return {
-      images: tf.concat(this.trainData[0]),
-      labels: tf.oneHot(tf.tensor1d(this.trainData[1], "int32"), 2).toFloat(), // 2 is the number of classes
-    };
-  }
+const getTestData = () => {
+  return {
+    images: tf.concat(testData[0]),
+    labels: tf.oneHot(tf.tensor1d(testData[1], "int32"), 2).toFloat(),
+  };
+};
 
-  getTestData() {
-    return {
-      images: tf.concat(this.testData[0]),
-      labels: tf.oneHot(tf.tensor1d(this.testData[1], "int32"), 2).toFloat(),
-    };
-  }
-}
-
-module.exports = new ImageDataset();
+module.exports = { loadData, getTestData, getTrainData };

@@ -1,3 +1,6 @@
+// Part 1
+// -----------
+
 export const showResult = (classes) => {
   const predictionsElement = document.getElementById("predictions");
   const probsContainer = document.createElement("div");
@@ -36,6 +39,9 @@ export const handleFilePicker = (callback) => {
     reader.readAsDataURL(f);
   });
 };
+
+// Part 2
+// -----------
 
 export const startWebcam = (video) => {
   return navigator.mediaDevices
@@ -78,6 +84,9 @@ export const takePicture = (video, callback) => {
     await callback(photo);
   };
 };
+
+// Part 3
+// -----------
 
 export const drawFaceBox = (photo, faces) => {
   // Draw box around the face detected ⬇️
