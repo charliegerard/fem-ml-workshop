@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  font-family: "Anonymous Pro", monospace;
+}
+
+header {
+  width: 100%;
+  background: #ffeb3b;
+  padding: 1em 0;
+  margin-bottom: 2em;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2em;
+  margin: 0;
+}
+
+.app-container {
+  display: block;
+  width: 90%;
+  margin: 3em auto 2em auto;
+  padding: 1em;
+}
+
+.canvas-container {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+}
+
+#myCanvas {
+  margin: 0 auto;
+  border: 1px solid grey;
+  border-radius: 5px;
+  background: white;
+}
+
+.imageToCheck {
+  display: none;
+}
+
+.buttons {
+  display: block;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.buttons button,
+#download-link {
+  background: #ffeb3b;
+  color: black;
+  border: none;
+  padding: 1em 2em;
+  margin: 1em 0;
+  font-size: 14px;
+  bottom: 3em;
+  font-family: "Anonymous Pro", monospace;
+  text-decoration: none;
+}
+
+p.prediction {
+  display: block;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 2em;
+}

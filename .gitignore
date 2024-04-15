@@ -10,3 +10,8 @@ exercises/*/dist
 exercises/*/.parcel-cache
 exercises/*/.package-lock.json
 
+solutions/*/node_modules
+solutions/*/dist
+solutions/*/.parcel-cache
+solutions/*/.package-lock.json
+

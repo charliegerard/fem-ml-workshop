@@ -173,7 +173,6 @@ const train = () => {
     epochs: epochs,
     callbacks: {
       onBatchEnd: async (batch, logs) => {
-        // trainStatus("Loss: " + logs.loss.toFixed(5));
         statusElement.innerHTML = "Loss: " + logs.loss.toFixed(5);
       },
     },
