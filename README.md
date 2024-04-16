@@ -1,4 +1,4 @@
-# Machine Learning in JavaScript workshop for FrontEnd Masters - SOLUTIONS
+# Machine Learning in JavaScript workshop for FrontEnd Masters
 
 ## Run the workshop website
 
@@ -12,3 +12,7 @@ npm run dev
 The workshop projects can be found in the `exercises` folder.
 
 Each exercise has a README file with instructions on how to run it.
+
+## Projects' solutions
+
+There is a `solutions` folder with the solution to each exercise.
