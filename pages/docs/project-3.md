@@ -18,78 +18,26 @@ keywords:
 Install the following packages:
 
 ```js
-    "@tensorflow/tfjs": "^4.17.0",
-    "@tensorflow/tfjs-node": "^4.17.0",
-    "@tensorflow/tfjs-node-gpu": "^4.17.0",
+"@tensorflow/tfjs": "^4.17.0",
+"@tensorflow/tfjs-node": "^4.17.0",
+"@tensorflow/tfjs-node-gpu": "^4.17.0",
 ```
 
 ## Collect the data
 
-In the front-end, use the Canvas Web API to create a drawing area and add the functionality to save each drawing as a png:
+The first step to creating a custom machine learning model is to gather a dataset. For this project, we're going to create our own by drawing on a canvas and downloading the images.
+Navigate to the folder `exercises/project-3` and run `npm run watch`.
+Open your browser at `http://localhost:1234` and select the public folder.
 
-```html
-<div class="canvas-container">
-  <canvas
-    id="myCanvas"
-    width="200"
-    height="200"
-    style="display: block"
-  ></canvas>
-</div>
-```
+This UI displays an area where you can draw and 3 buttons, one to download the image, one to predict the label of the image and one to clear the canvas.
 
-```js
-var context = document.getElementsByTagName("canvas")[0].getContext("2d");
-var canvas = document.getElementsByTagName("canvas")[0];
+To create your dataset, pick 2 shapes you'd like to use with your model, for example "square" and "triangle". Draw a square, download the image, rename it with the format `number-shape` (`0-square.png`), clear the canvas and repeat until you have at least 20 squares and 20 triangles.
 
-canvas.addEventListener("mousedown", function (e) {
-  var mouseX = e.pageX - this.offsetLeft;
-  var mouseY = e.pageY - this.offsetTop;
+Place these images in a folder called `data` and create two subfolders `train` and `test`. Move about 20% of your images to the `test` folder and the other 80% to the `train` folder.
 
-  paint = true;
-  addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-  redraw();
-});
+## Load the data
 
-canvas.addEventListener("mousemove", function (e) {
-  if (paint) {
-    addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-    redraw();
-  }
-});
-
-canvas.addEventListener("mouseup", function (e) {
-  paint = false;
-});
-
-function redraw() {
-  context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
-
-  context.strokeStyle = "#000000";
-  context.lineJoin = "round";
-  context.lineWidth = 5;
-  context.fillStyle = "#ffffff";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-
-  for (var i = 0; i < clickX.length; i++) {
-    context.beginPath();
-    if (clickDrag[i] && i) {
-      context.moveTo(clickX[i - 1], clickY[i - 1]);
-    } else {
-      context.moveTo(clickX[i] - 1, clickY[i]);
-    }
-    context.lineTo(clickX[i], clickY[i]);
-    context.closePath();
-    context.stroke();
-  }
-}
-
-function addClick(x, y, dragging) {
-  clickX.push(x);
-  clickY.push(y);
-  clickDrag.push(dragging);
-}
-```
+Now that your dataset is created, we need to load it in Node.js to use it to train the model.
 
 In Node.js, load the images downloaded, and split them between a training set and a test set:
 
@@ -100,8 +48,10 @@ const path = require("path");
 
 const TRAIN_IMAGES_DIR = "./data/train";
 const TEST_IMAGES_DIR = "./data/test";
+const trainData = [];
+const testData = [];
 
-function loadImages(dataDir) {
+const loadImages = (dataDir) => {
   const images = [];
   const labels = [];
 
@@ -116,7 +66,6 @@ function loadImages(dataDir) {
     var buffer = fs.readFileSync(filePath);
     var imageTensor = tf.node
       .decodeImage(buffer)
-      // .resizeNearestNeighbor([96, 96])
       .resizeNearestNeighbor([28, 28])
       .toFloat()
       .div(tf.scalar(255.0))
@@ -132,56 +81,38 @@ function loadImages(dataDir) {
       labels.push(1);
     }
   }
-  console.log("Labels are");
-  console.log(labels);
+  console.log("Labels are: ", labels);
   return [images, labels];
-}
+};
 
-class ImageDataset {
-  constructor() {
-    this.trainData = [];
-    this.testData = [];
-  }
+const loadData = () => {
+  console.log("Loading images...");
+  trainData = loadImages(TRAIN_IMAGES_DIR);
+  testData = loadImages(TEST_IMAGES_DIR);
+  console.log("Images loaded successfully.");
+};
 
-  loadData() {
-    console.log("Loading images...");
-    this.trainData = loadImages(TRAIN_IMAGES_DIR);
-    this.testData = loadImages(TEST_IMAGES_DIR);
-    console.log("Images loaded successfully.");
-  }
+const getTrainData = () => {
+  return {
+    images: tf.concat(trainData[0]),
+    labels: tf.oneHot(tf.tensor1d(trainData[1], "int32"), 2).toFloat(), // 2 is the number of classes
+  };
+};
 
-  getTrainData() {
-    return {
-      images: tf.concat(this.trainData[0]),
-      labels: tf.oneHot(tf.tensor1d(this.trainData[1], "int32"), 2).toFloat(), // 2 is the number of classes
-    };
-  }
+const getTestData = () => {
+  return {
+    images: tf.concat(testData[0]),
+    labels: tf.oneHot(tf.tensor1d(testData[1], "int32"), 2).toFloat(),
+  };
+};
 
-  getTestData() {
-    return {
-      images: tf.concat(this.testData[0]),
-      labels: tf.oneHot(tf.tensor1d(this.testData[1], "int32"), 2).toFloat(),
-    };
-  }
-}
-
-module.exports = new ImageDataset();
-```
-
-## Data transformation
-
-```js
-
+module.exports = { loadData, getTestData, getTrainData };
 ```
 
 ## Create the model
 
-- Import Tensorflow.js
-- Choose your type of machine learning architecture (here sequential)
-- Add layers
-- Optimize
-
 ```js
+// Import Tensorflow.js
 const tf = require("@tensorflow/tfjs");
 
 const kernel_size = [3, 3];
@@ -193,11 +124,11 @@ const dropout_conv = 0.3;
 const dropout_dense = 0.3;
 const numClasses = 2;
 
+// Choose your type of machine learning architecture (here sequential)
 const model = tf.sequential();
+// Add layers to the neural network
 model.add(
   tf.layers.conv2d({
-    // inputShape: [96, 96, 1],
-    // inputShape: [96, 96, 4],
     inputShape: [28, 28, 4],
     filters: first_filters,
     kernelSize: kernel_size,
@@ -215,14 +146,12 @@ model.add(tf.layers.maxPooling2d({ poolSize: pool_size }));
 model.add(tf.layers.dropout({ rate: dropout_conv }));
 
 model.add(tf.layers.flatten());
-
-// model.add(tf.layers.dense({ units: 256, activation: "relu" }));
 model.add(tf.layers.dense({ units: 10, activation: "relu" }));
 
 model.add(tf.layers.dropout({ rate: dropout_dense }));
-// model.add(tf.layers.dense({ units: 7, activation: "softmax" }));
 model.add(tf.layers.dense({ units: numClasses, activation: "softmax" }));
 
+// Optimize
 const optimizer = tf.train.adam(0.0001);
 model.compile({
   optimizer: optimizer,
@@ -233,41 +162,46 @@ model.compile({
 module.exports = model;
 ```
 
-## Train
+## Train and save
 
 ```js
-data.loadData();
+const tf = require("@tensorflow/tfjs-node-gpu");
 
-const { images: trainImages, labels: trainLabels } = data.getTrainData();
-console.log("Training Images (Shape): " + trainImages.shape);
-console.log("Training Labels (Shape): " + trainLabels.shape);
+const { loadData, getTrainData, getTestData } = require("./get-data");
+const model = require("./create-model");
 
-model.summary();
+async function run(epochs, batchSize, modelSavePath) {
+  loadData();
 
-const validationSplit = 0.2;
-await model.fit(trainImages, trainLabels, {
-  epochs,
-  batchSize,
-  validationSplit,
-});
+  const { images: trainImages, labels: trainLabels } = getTrainData();
+  console.log("Training Images (Shape): " + trainImages.shape);
+  console.log("Training Labels (Shape): " + trainLabels.shape);
 
-const { images: testImages, labels: testLabels } = data.getTestData();
-const evalOutput = model.evaluate(testImages, testLabels);
+  model.summary();
 
-console.log(
-  `\nEvaluation result:\n` +
-    `  Loss = ${evalOutput[0].dataSync()[0].toFixed(3)}; ` +
-    `Accuracy = ${evalOutput[1].dataSync()[0].toFixed(3)}`
-);
-```
+  const validationSplit = 0.2;
+  await model.fit(trainImages, trainLabels, {
+    epochs,
+    batchSize,
+    validationSplit,
+  });
 
-## Save the model
+  const { images: testImages, labels: testLabels } = getTestData();
+  const evalOutput = model.evaluate(testImages, testLabels);
 
-```js
-if (modelSavePath != null) {
-  await model.save(`file://${modelSavePath}`);
-  console.log(`Saved model to path: ${modelSavePath}`);
+  console.log(
+    `\nEvaluation result:\n` +
+      `  Loss = ${evalOutput[0].dataSync()[0].toFixed(3)}; ` +
+      `Accuracy = ${evalOutput[1].dataSync()[0].toFixed(3)}`
+  );
+
+  if (modelSavePath != null) {
+    await model.save(`file://${modelSavePath}`);
+    console.log(`Saved model to path: ${modelSavePath}`);
+  }
 }
+
+run(10, 5, "./public/model");
 ```
 
 ## Use it in the frontend
@@ -278,7 +212,6 @@ const modelURL = "./model/model.json";
 const labels = ["square", "triangle"];
 
 async function loadTsfModel(modelURL) {
-  // if (!model) model = await tf.loadModel(modelURL);
   if (!model) model = await tf.loadLayersModel(modelURL);
 }
 
@@ -288,51 +221,15 @@ const predict = async (newImage) => {
 
   const processedImage = await tf.browser.fromPixelsAsync(newImage, 4);
   const smallImg = tf.image.resizeBilinear(processedImage, [28, 28]);
-  // const smallImg = tf.image.resizeBilinear(processedImage, [96, 96]);
   const resized = tf.cast(smallImg, "float32");
   let shape;
   const predictions = await model
-    .predict(
-      tf.reshape(resized, (shape = [1, 28, 28, 4]))
-      // tf.reshape(resized, (shape = [1, 96, 96, 3]))
-    )
+    .predict(tf.reshape(resized, (shape = [1, 28, 28, 4])))
     .data();
-
-  // let orderedPredictions = Array.from(predictions)
-  //   .map(function (p, i) {
-  //     // this is Array.map
-  //     return {
-  //       probability: p,
-  //       className: labels[i], // we are selecting the value from the obj
-  //     };
-  //   })
-  //   .sort(function (a, b) {
-  //     return b.probability - a.probability;
-  //   });
-  // // .slice(0, 2);
-  // console.log(orderedPredictions);
 
   const label = predictions.indexOf(Math.max(...predictions));
 
-  displayPrediction(label);
-};
-
-const displayPrediction = (label) => {
-  let prediction;
-  switch (label) {
-    case 0:
-      // prediction = 'baseball';
-      prediction = "Square!";
-      break;
-    case 1:
-      prediction = "Triangle!";
-      break;
-    default:
-      break;
-  }
-
-  var predictionParagraph = document.getElementsByClassName("prediction")[0];
-  predictionParagraph.textContent = prediction;
+  console.log(labels[label]);
 };
 ```
 
@@ -342,6 +239,6 @@ Go wild! Try to create a model using different types architectures, layers, para
 
 ## Additional resources
 
-- Gesture recognition with Arduino, Daydream controller and phone
-- Brain blink detection
+- [Air Street fighter](https://charliegerard.dev/project/street-fighter-ml/) recognition with Arduino, Daydream controller and phone
+- [Brain blink detection](https://twitter.com/devdevcharlie/status/1387095042733580291)
 - [Tiny Motion trainer](https://experiments.withgoogle.com/tiny-motion-trainer/view/)

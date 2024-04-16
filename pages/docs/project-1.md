@@ -106,7 +106,7 @@ webcamButton.onclick = () => startWebcam(video);
 ```
 
 Because the `detect` method used in the previous section takes an image as parameter, we need to transform the webcam feed into a single image. To do this, you can import the `takePicture` function from the utils as well.
-This function uses the Canvas API and more specifically the `toDataURL` method to take the input from the webcam and append it to an image element.
+This function uses the Canvas API to take the input from the webcam and append it to the canvas element.
 This function takes a video element and a callback as parameter, that will be called when the user clicks on the `predict` button.
 
 ```js
@@ -167,7 +167,7 @@ Then, as an option (and a cool thing to do), you can use the data returned from 
 
 ## Other models
 
-- Object detection: [CocoSSD](https://www.kaggle.com/models/tensorflow/ssd-mobilenet-v2/frameworks/tfJs)
+- Object detection: [MobileNet](https://github.com/tensorflow/tfjs-models/blob/master/mobilenet/README.md)
 - [Face detection](https://github.com/tensorflow/tfjs-models/tree/master/face-detection)
 - [Pose detection](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection)
 - [Hand pose detection](https://github.com/tensorflow/tfjs-models/tree/master/handpose)
@@ -176,16 +176,13 @@ Then, as an option (and a cool thing to do), you can use the data returned from 
 - [Depth estimation model](https://github.com/tensorflow/tfjs-models/tree/master/depth-estimation)
 - [GPT2](https://github.com/tensorflow/tfjs-models/tree/master/gpt2)
 
-## Additional info
-
-- What's in a model?
-- How does image recognition work?
-
 ## Other projects
 
-- Indoor position detection using WiFi data
-- Red light, green light
-- Figma hand built UI
-- Hands-free coding
-- Beat pose
+- [Red light, green light](https://charliegerard.dev/project/red-light-green-light/)
+- [Figma hand built UI](https://charliegerard.dev/project/figma-plugin-hand-controlled/)
+- [Hands-free coding](https://charliegerard.dev/project/hands-free-coding/)
+- [Beat pose](https://charliegerard.dev/project/beat-pose/)
 - [Gaze keyboard](github.com/charliegerard/gaze-detection)
+- [TFJS recycling](https://charliegerard.dev/project/tfjs-recycling/)
+- [Rainbrow](https://charliegerard.dev/project/rainbrow/)
+- [Fruit Ninja clone](https://charliegerard.dev/project/splat/)

@@ -1,13 +1,12 @@
 import React from "react";
 import Link from "next/link";
 
-export function TopNav({ children }) {
+export function TopNav() {
   return (
     <nav>
       <Link href="/" className="flex">
         Home
       </Link>
-      <section>{children}</section>
       <style jsx>
         {`
           nav {

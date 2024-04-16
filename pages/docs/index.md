@@ -20,12 +20,13 @@ Sub-fields of AI:
 - Computer Vision
 - Natural Language Processing
 
-## Terminology
+## Some Terminology
 
 - Model: A function that takes in an input, runs calculations and produces an output with probabilities.
 - Machine learning algorithms: Convolutional Neural Network (CNN), Naive Bayes, Long Short Term Memory (LSTM), ...
 - Weights: How much importance to give to each feature of the dataset to improve the model's accuracy to perform a certain task. These weights are adjusted as the model is trained on the data and the accuracy changes. Learned traits.
 - Overfitting: When the model fits too closely to the training dataset so it is not able to predict accurately new data.
+- Classes or Labels: A one-word description of an individual piece of data. For example, "dog", "cat" for images of pets.
 
 ## Types of machine learning
 

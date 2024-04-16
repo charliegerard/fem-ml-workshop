@@ -15,6 +15,15 @@ keywords:
 
 Technique that reuses a pre-trained model on a new task. For example, if an image classification model was trained to recognize dogs, the knowledge gained from that task could be applied to try to recognize whales.
 
-## Examples
+## Quick start
 
-## How does it work?
+- [Teachable machine](https://teachablemachine.withgoogle.com/)
+
+## Some Terminology
+
+- Epochs: Iterations. The one entire passing of training data through the machine learning algorithm.
+- Activation: a function added into an artificial neural network to help the network learn complex patterns in the data.
+- Batch size: Number of training examples used.
+- Learning rate: hyperparameter that controls how much the model should change each time the weights are updated.
+- Tensor: Mathematical object used to describe physical properties. Generalisation of scalars and vectors.
+- Optimizer: a function or an algorithm that adjusts the attributes of the neural network, such as weights and learning rates
