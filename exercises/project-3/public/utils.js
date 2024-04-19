@@ -2,7 +2,7 @@ let clickX = new Array();
 let clickY = new Array();
 let clickDrag = new Array();
 let paint;
-const labels = ["square", "triangle"];
+const labels = ["circle", "triangle"];
 const canvas = document.getElementsByTagName("canvas")[0];
 const context = document.getElementsByTagName("canvas")[0].getContext("2d");
 const link = document.getElementById("download-link");

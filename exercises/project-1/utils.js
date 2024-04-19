@@ -71,12 +71,6 @@ export const takePicture = (video, callback) => {
   canvas.height = height;
   context.drawImage(video, 0, 0, width, height);
 
-  // const data = canvas.toDataURL("image/png");
-  // const photo = document.createElement("img");
-  // photo.setAttribute("src", data);
-  // photo.width = IMAGE_SIZE;
-  // photo.height = IMAGE_SIZE;
-  // photo.style.display = "none";
   const outputEl = document.getElementById("predictions");
   // outputEl.appendChild(photo);
   outputEl.appendChild(canvas);

@@ -8,6 +8,8 @@ const train = async () => {
 
   const { images: trainImages, labels: trainLabels } = getTrainData();
 
+  model.summary();
+
   await model.fit(trainImages, trainLabels, {
     epochs: 10,
     batchSize: 5,

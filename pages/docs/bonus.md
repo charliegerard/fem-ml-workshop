@@ -17,7 +17,6 @@ Now, in the bonus section, I want to share some cool things you can do as a Java
 
 ## Examples
 
-- Eye blink detection with the Notion brain sensor
 - [Google Dev Library](https://devlibrary.withgoogle.com/products/ml?sort=added&category=category-tfjs)
 - [TensorFlow experiments](https://experiments.withgoogle.com/experiments?tag=TensorFlow)
 
@@ -34,3 +33,4 @@ Now, in the bonus section, I want to share some cool things you can do as a Java
 
 - [WebML newsletter](https://www.linkedin.com/newsletters/web-ml-tensorflow-js-monthly-6895540524061736960/)
 - [Made with TensorFlow.js](https://www.youtube.com/playlist?list=PLQY2H8rRoyvzSZZuF0qJpoJxZR1NgzcZw)
+- [Convolutional networks](https://cs231n.github.io/convolutional-networks/)
