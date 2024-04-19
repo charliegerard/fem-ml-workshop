@@ -1,0 +1,21 @@
+{
+  "name": "custom-model",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "python3 -m http.server 1234"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.17.0",
+    "@tensorflow/tfjs-node": "^4.17.0",
+    "@tensorflow/tfjs-node-gpu": "^4.17.0",
+    "parcel": "2.11.0"
+  },
+  "overrides": {
+    "@parcel/watcher": "2.1.0"
+  }
+}

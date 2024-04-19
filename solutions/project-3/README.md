@@ -1,4 +1,4 @@
-# Building a custom model
+# Building a custom machine learning model 🎉
 
 ## How to run
 
@@ -14,7 +14,9 @@ npm run watch
 
 Run the app, draw in the canvas using your mouse and download each of your drawings.
 
-Label each image with its class name. For example, if you're building an image classification to recognise a square VS. a triange, label your images `0-square.png`, `1-square.png`, `2-square.png`, etc... and `0-triangle`, `1-triangle`, etc..
+Label each image with its class name. For example, if you're building an image classification model to recognise a square vs. a triange, label your images `0-square.png`, `1-square.png`, `2-square.png`, etc... and `0-triangle`, `1-triangle`, etc..
+
+Draw at least 30 images for each shape.
 
 ## Step 2: Build the model
 

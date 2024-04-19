@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Transfer learning with TensorFlow.js</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Part 1 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script> -->
+  </head>
+  <body>
+    <h2>Transfer learning</h2>
+
+    <!-- Part 1 -->
+    <!-- <button id="start">Start</button>
+    <div id="webcam-container"></div>
+    <div id="label-container"></div> -->
+
+    <!-- Part 2 -->
+    <div id="status">Loading model...</div>
+
+    <div id="controller" style="display: none">
+      <div>
+        <section>
+          <button id="train">
+            <span id="train-status">TRAIN MODEL</span>
+          </button>
+          <button id="predict">START PREDICTIONS</button>
+        </section>
+
+        <video
+          autoplay
+          playsinline
+          muted
+          id="webcam"
+          width="224"
+          height="224"
+        ></video>
+      </div>
+
+      <div id="buttons-container">
+        <button class="record-button" id="left">Add left sample</button>
+        <p><span id="left-total">0</span> examples</p>
+        <button class="record-button" id="right">Add right sample</button>
+        <p><span id="right-total">0</span> examples</p>
+      </div>
+    </div>
+
+    <script type="module" src="part2.js"></script>
+  </body>
+</html>

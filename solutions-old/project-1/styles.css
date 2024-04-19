@@ -1,0 +1,46 @@
+body {
+  background: rgb(15, 11, 39);
+  color: white;
+  font-family: monospace;
+}
+
+a {
+  color: white;
+}
+
+button {
+  cursor: pointer;
+}
+
+#uploaded-image,
+#webcam-section {
+  display: grid;
+  width: 90%;
+  min-height: 300px;
+  height: 300px;
+  justify-content: space-between;
+  height: 500px;
+  min-height: 400px;
+}
+
+#uploaded-image #input {
+  display: block;
+}
+
+#uploaded-image #predictions {
+  display: block;
+  width: 50%;
+}
+
+#loaded-image {
+  margin-top: 50px;
+}
+
+#webcam-section #input {
+  display: block;
+}
+
+#webcam-section #predictions {
+  display: block;
+  width: 50%;
+}
